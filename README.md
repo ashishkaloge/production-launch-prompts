@@ -227,12 +227,12 @@ Maintained by [Ashish Kaloge](https://github.com/ashishkaloge).
 
 ## Related Public Projects
 
-- [Awesome Agent Instructions](https://github.com/incline-ltd/awesome-agent-instructions)
+- [Awesome Agent Instructions](https://github.com/ashishkaloge/awesome-agent-instructions)
   provides patterns and a skill for reviewing and simplifying coding-agent
   instructions while preserving project constraints.
-- [Coding Agent Guidelines](https://github.com/incline-ltd/coding-agent-guidelines)
+- [Coding Agent Guidelines](https://github.com/ashishkaloge/coding-agent-guidelines)
   gives coding agents practical working rules.
-- [Awesome Agentic Engineering](https://github.com/incline-ltd/awesome-agentic-engineering)
+- [Awesome Agentic Engineering](https://github.com/ashishkaloge/awesome-agentic-engineering)
   collects useful tools and references for building with coding agents.
 
 ## Contributing
