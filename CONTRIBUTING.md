@@ -34,7 +34,7 @@ product or app before launch.
 Run:
 
 ```bash
-npx --yes markdownlint-cli2 README.md PROMPTS.md CHECKLIST.md SCORECARD.md CONTRIBUTING.md SECURITY.md docs examples prompts
+npx --yes markdownlint-cli2 "**/*.md"
 node scripts/check-links.mjs
 git diff --check
 ```
