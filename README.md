@@ -8,10 +8,12 @@ process. It works for SaaS, marketplaces, AI products, internal tools, mobile
 apps, APIs, dashboards, and most software products where security, reliability,
 data integrity, and user trust matter.
 
-[![Fictional launch audit showing a not-ready verdict, a score of 68 out of 100, two critical blockers, and five high priority issues](docs/assets/fictional-launch-audit.svg)](examples/fictional-saas-scorecard.md)
+[![Fictional launch scorecard before and after fixes: the baseline audit was not ready at 68 out of 100 with two critical blockers and five high priority issues, and the second re-audit scored 86 out of 100 with no critical blockers and one accepted high priority issue](docs/assets/fictional-launch-audit.svg)](examples/fictional-saas-scorecard.md)
 
-This fictional preview shows the kind of clear launch decision these prompts
-produce. [See the full sample scorecard](examples/fictional-saas-scorecard.md).
+This fictional preview shows what you keep after an audit. Prompt 10 writes a
+scorecard into your repo. After you fix things, its re-audit records the score
+before and after, the blockers closed or still open, and the commit for each
+run. [See the full sample scorecard](examples/fictional-saas-scorecard.md).
 
 ## Why This Exists
 
@@ -35,7 +37,7 @@ These prompts turn that uncertainty into a repeatable launch checklist.
 | [PROMPTS.md](PROMPTS.md) | 21 copy-paste prompts for codebase-aware agents |
 | [prompts/](prompts) | Same prompts split into individual files |
 | [CHECKLIST.md](CHECKLIST.md) | One-page launch readiness checklist |
-| [SCORECARD.md](SCORECARD.md) | Template for recording audit results and fixes |
+| [SCORECARD.md](SCORECARD.md) | Scorecard format prompt 10 writes, with re-audit history |
 | [docs/STANDARDS_MAP.md](docs/STANDARDS_MAP.md) | How this maps to public launch/security standards |
 | [examples/](examples) | Fictional sample output for contributors and users |
 
@@ -54,7 +56,7 @@ Run these before your first real user.
 | 07 | Testing Audit | Untested critical paths and missing failure cases |
 | 08 | DevOps Audit | Weak CI, no rollback, poor logging, backup gaps |
 | 09 | Frontend and UX Audit | Mobile, forms, accessibility, empty states |
-| 10 | Launch Verdict | Final go/no-go scorecard and top fixes |
+| 10 | Launch Verdict | Go/no-go verdict written to `LAUNCH_SCORECARD.md`, plus a re-audit after fixes |
 
 ### Part 2: Product and Operations Readiness
 
@@ -113,12 +115,14 @@ For an existing product or app, start with the highest-risk launch checks:
 | 2 | [prompts/05-database-audit.md](prompts/05-database-audit.md) | Find data-loss, integrity, migration, and concurrency risks |
 | 3 | [prompts/07-testing-audit.md](prompts/07-testing-audit.md) | Find missing coverage for critical user and failure paths |
 | 4 | [prompts/08-devops-and-infrastructure-audit.md](prompts/08-devops-and-infrastructure-audit.md) | Find CI, deployment, rollback, logging, and backup gaps |
-| 5 | [prompts/10-launch-verdict-and-scalability-audit.md](prompts/10-launch-verdict-and-scalability-audit.md) | Produce the final launch verdict and scorecard |
+| 5 | [prompts/10-launch-verdict-and-scalability-audit.md](prompts/10-launch-verdict-and-scalability-audit.md) | Produce the final launch verdict and write `LAUNCH_SCORECARD.md` |
+| 6 | [prompts/10-launch-verdict-and-scalability-audit.md#re-audit-after-fixes](prompts/10-launch-verdict-and-scalability-audit.md#re-audit-after-fixes) | After fixes, record the score before and after and which blockers closed |
 
 Use this prefix when running a prompt in an existing app:
 
 ```text
-Audit only. Do not edit files yet.
+Audit only. Do not edit files yet, except LAUNCH_SCORECARD.md when the prompt
+asks for it.
 Do not read env files, secrets, credentials, production logs, or customer data.
 Return findings with file path, line number, severity, risk scenario, and
 recommended fix.
@@ -163,8 +167,11 @@ after the security audit and before the final launch verdict.
    [21 AI and Agent Production Safety](prompts/21-ai-and-agent-production-safety.md).
 6. Run
    [10 Launch Verdict and Scalability Audit](prompts/10-launch-verdict-and-scalability-audit.md)
-   last.
-7. Run prompts 11-20 after all critical launch blockers are resolved.
+   last. It writes `LAUNCH_SCORECARD.md`.
+7. Fix the blockers, then run the
+   [re-audit after fixes](prompts/10-launch-verdict-and-scalability-audit.md#re-audit-after-fixes).
+   Repeat until no CRITICAL blockers are open.
+8. Run prompts 11-20 after all critical launch blockers are resolved.
 
 Do not go live while prompts 02, 05, 07, 08, or 10 report CRITICAL issues.
 For apps with payments, also clear prompt 18. For regulated data or AI data
@@ -181,7 +188,7 @@ Each prompt asks the agent to return:
 - ranked next actions
 - final score for that area
 
-Prompt 10 produces the launch scorecard:
+Prompt 10 prints the launch verdict:
 
 ```text
 Overall verdict: PRODUCTION READY / NOT READY
@@ -204,6 +211,18 @@ High priority fixes for this week: ...
 Top 10 fixes ranked by risk x effort: ...
 ```
 
+It also writes the verdict to `LAUNCH_SCORECARD.md` in your repo, in the
+[SCORECARD.md](SCORECARD.md) format: commit and date audited, category scores,
+and each blocker with file and line, evidence, fix, and status. Each re-audit
+adds a row to its history:
+
+```text
+Run         Commit   Score before  Score after  Closed      Still open
+Baseline    3f9c2a1  -             68/100       -           B1 B2 H1-H5
+Re-audit 1  8d41e07  68/100        79/100       B1 B2 H4    H1 H2 H3 H5
+Re-audit 2  c27a5f3  79/100        86/100       H1 H2 H3    H5
+```
+
 ## What Makes This Different
 
 - Audit-first, so agents do not rewrite your app before you understand the risk.
@@ -211,6 +230,8 @@ Top 10 fixes ranked by risk x effort: ...
 - Universal product/app checks with optional coverage for high-risk flows.
 - Cross-tool: works with Claude Code, Codex, Cursor, and most repo-aware agents.
 - Output-focused: every prompt demands file paths, severity, impact, and fixes.
+- Leaves a record: prompt 10 writes a scorecard into your repo, and each
+  re-audit shows what your fixes changed.
 
 ## Safety Notes
 
@@ -218,8 +239,14 @@ These prompts are not a replacement for professional security review, legal
 advice, compliance review, or production incident planning. They are a fast way
 to catch obvious and high-risk launch issues before users find them.
 
+A PRODUCTION READY verdict is the agent's judgment against these prompts. It is
+not a certification, a penetration test, or a compliance sign-off.
+
 Never paste real secrets, private keys, customer data, production credentials,
 or production logs into an AI tool. If a prompt finds a secret, rotate it.
+
+`LAUNCH_SCORECARD.md` points to open risks by file and line. In a public repo,
+keep it out of commits until the critical blockers are closed.
 
 ## Author
 

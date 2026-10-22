@@ -13,7 +13,9 @@ Use one prompt at a time from the root of the product or app you want to review.
 7. [Testing Audit](07-testing-audit.md)
 8. [DevOps and Infrastructure Audit](08-devops-and-infrastructure-audit.md)
 9. [Frontend and UX Audit](09-frontend-and-ux-audit.md)
-10. [Launch Verdict and Scalability Audit](10-launch-verdict-and-scalability-audit.md)
+10. [Launch Verdict and Scalability Audit](10-launch-verdict-and-scalability-audit.md),
+    which writes `LAUNCH_SCORECARD.md`, and its
+    [re-audit after fixes](10-launch-verdict-and-scalability-audit.md#re-audit-after-fixes)
 
 ## Product and Operations Readiness
 
